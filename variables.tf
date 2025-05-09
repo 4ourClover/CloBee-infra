@@ -8,5 +8,9 @@ variable "azs" {
 }
 
 variable "cidr_block" {
-    type = String
+    type = string
+}
+
+variable "vpc_name" {
+    type = string
 }
