@@ -2,10 +2,7 @@ resource "aws_lb" "public_alb" {
     name               = "clobee-alb"
     internal           = false
     load_balancer_type = "application"
-    subnets            = [
-        module.subnet.public_subnet1_id,
-        module.subnet.public_subnet2_id,
-    ]
+    subnets            = [module.subnet.public_subnet1_id]
     security_groups = [aws_security_group.alb_sg.id]
 }
 
@@ -15,7 +12,7 @@ resource "aws_lb_listener" "http" {
     protocol          = "HTTP"
 
     default_action {
-        type             = "fixed-response"
+        type = "fixed-response"
         fixed_response {
         content_type = "text/plain"
         message_body = "OK"
