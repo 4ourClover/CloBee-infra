@@ -7,6 +7,10 @@ variable "instance_count" {
   type = number
 }
 
+variable "vpc_id" {
+  type = string
+}
+
 variable "ami" {
   type = string
 }
@@ -20,12 +24,8 @@ variable "key_name" {
 }
 
 variable "subnet_id" {
-  type = string
+  type = list(string)
 }
-
-# variable "sg_id" {
-#   type = string
-# }
 
 variable "alb_sg_id" {
   description = "ID of the ALB security group"

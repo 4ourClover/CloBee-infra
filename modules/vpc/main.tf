@@ -28,8 +28,3 @@ resource "aws_route_table" "public" {
   }
 }
 
-# 라우트 테이블 - subnet 연결
-resource "aws_route_table_association" "public_subnet1" {
-  subnet_id      = module.subnets.aws_subnet.public-subnet1.id
-  route_table_id = aws_route_table.public.id
-}

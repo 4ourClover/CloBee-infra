@@ -10,3 +10,7 @@ variable "azs" {
 variable "vpc_name" {
   type = string
 }
+
+variable "public_route_table_id" {
+  type = string
+}

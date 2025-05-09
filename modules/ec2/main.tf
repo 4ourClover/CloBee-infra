@@ -1,10 +1,20 @@
 resource "aws_instance" "this" {
+  count                  = var.instance_count
+  ami                    = var.ami
+  instance_type          = var.instance_type
+  subnet_id              = var.subnet_id[count.index]
+  key_name               = var.key_name
+  vpc_security_group_ids = [aws_security_group.app_sg.id]
+
+  tags = {
+    Name = "${var.name_prefix}-${count.index}"
+  }
 }
 
 resource "aws_security_group" "app_sg" {
   name        = "app_sg"
   description = "Allow HTTP traffic to ALB"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port       = 80
