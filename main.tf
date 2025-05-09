@@ -1,6 +1,6 @@
 module "vpc" {
   source     = "./modules/vpc"
-  vpc_name   = "clobee-vpc"
+  vpc_name   = var.vpc_name
   cidr_block = var.cidr_block
 }
 
@@ -27,7 +27,7 @@ module "ec2_master" {
   vpc_id         = module.vpc.vpc_id
   instance_type  = var.instance_type
   key_name       = var.key_name
-  subnet_id      = module.subnets.private_subnet1_id
+  subnet_id      = [module.subnets.private_subnet1_id]
   alb_sg_id      = module.alb.alb_sg_id
 }
 
