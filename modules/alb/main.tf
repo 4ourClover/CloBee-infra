@@ -2,7 +2,7 @@ resource "aws_lb" "public_alb" {
   name               = "clobee-alb"
   internal           = false
   load_balancer_type = "application"
-  subnets            = [module.subnet.public_subnet1_id]
+  subnets            = [var.subnets]
   security_groups    = [aws_security_group.alb_sg.id]
 }
 
@@ -24,7 +24,7 @@ resource "aws_lb_listener" "http" {
 resource "aws_security_group" "alb_sg" {
   name        = "alb-sg"
   description = "Allow HTTP traffic to ALB"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 80

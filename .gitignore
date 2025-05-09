@@ -1,3 +1,5 @@
 terraform.tfvars
 .env
 .terraform/
+.vscode/
+.terraform.lock.hcl

@@ -1,6 +1,6 @@
 # public-subnet
 resource "aws_subnet" "public-subnet1" {
-  vpc_id                  = aws_vpc.main.id
+  vpc_id                  = var.vpc_id
   cidr_block              = "10.0.10.0/24"
   availability_zone       = var.azs[0]
   map_public_ip_on_launch = true
@@ -11,7 +11,7 @@ resource "aws_subnet" "public-subnet1" {
 
 # Subnet 1
 resource "aws_subnet" "private-subnet1" {
-  vpc_id                  = aws_vpc.main.id
+  vpc_id                  = var.vpc_id
   cidr_block              = "10.0.11.0/24"
   availability_zone       = var.azs[0]
   map_public_ip_on_launch = false
@@ -22,7 +22,7 @@ resource "aws_subnet" "private-subnet1" {
 
 # Subnet 2
 resource "aws_subnet" "private-subnet2" {
-  vpc_id                  = aws_vpc.main.id
+  vpc_id                  = var.vpc_id
   cidr_block              = "10.0.12.0/24"
   availability_zone       = var.azs[0]
   map_public_ip_on_launch = false
@@ -32,12 +32,18 @@ resource "aws_subnet" "private-subnet2" {
 }
 
 # Subnet 3
-resource "aws_subnet" "private-subnet2" {
-  vpc_id                  = aws_vpc.main.id
+resource "aws_subnet" "private-subnet3" {
+  vpc_id                  = var.vpc_id
   cidr_block              = "10.0.13.0/24"
   availability_zone       = var.azs[0]
   map_public_ip_on_launch = false
   tags = {
     Name = "${var.vpc_name}-private-subnet-3"
   }
+}
+
+# 라우트 테이블 - subnet 연결
+resource "aws_route_table_association" "public_subnet1_assoc" {
+  subnet_id      = aws_subnet.public-subnet1.id
+  route_table_id = var.public_route_table_id
 }

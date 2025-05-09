@@ -7,6 +7,6 @@ variable "alb_name" {
 }
 
 variable "subnets" {
-  description = "List of subnets to associate with the ALB"
-  type        = list(string)
+  type = string
 }
+
