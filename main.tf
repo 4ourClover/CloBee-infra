@@ -26,7 +26,7 @@ module "ec2_master" {
   instance_type  = var.instance_type
   key_name       = var.key_name
   subnet_id      = module.subnets.private_subnet1_id
-  sg_id          = ""
+  alb_sg_id      = module.alb.alb_sg_id
 }
 
 module "ec2_worker" {
