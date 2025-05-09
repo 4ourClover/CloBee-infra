@@ -58,3 +58,8 @@ resource "aws_subnet" "public-subnet2" {
     Name = "${var.vpc_name}-public-subnet-2"
   }
 }
+
+resource "aws_route_table_association" "public_subnet2_assoc" {
+  subnet_id      = aws_subnet.public-subnet2.id
+  route_table_id = var.public_route_table_id
+}
