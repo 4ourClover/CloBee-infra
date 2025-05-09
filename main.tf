@@ -17,3 +17,14 @@ module "alb" {
   vpc_id   = module.vpc.vpc_id
   subnets  = [module.ec2.public_subnet1_id]
 }
+
+module "ec2_master" {
+  source         = "./modules/ec2"
+  name_prefix    = "ec2_master"
+  instance_count = 1
+  ami            = var.ami
+  instance_type  = var.instance_type
+  key_name       = var.key_name
+  subnet_id      = module.subnets.private_subnet1_id
+  sg_id          = ""
+}
