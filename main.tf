@@ -28,3 +28,14 @@ module "ec2_master" {
   subnet_id      = module.subnets.private_subnet1_id
   sg_id          = ""
 }
+
+module "ec2_worker" {
+  source         = "./modules/ec2"
+  name_prefix    = "ec2_worker"
+  instance_count = 2
+  ami            = var.ami
+  instance_type  = var.instance_type
+  key_name       = var.key_name
+  subnet_id      = module.subnets.private_subnet2_id
+  sg_id          = ""
+}
