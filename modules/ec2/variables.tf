@@ -31,3 +31,7 @@ variable "alb_sg_id" {
   description = "ID of the ALB security group"
   type        = string
 }
+
+variable "app_sg" {
+  type = string
+}

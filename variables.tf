@@ -19,11 +19,14 @@ variable "ami" {
   type = string
 }
 
-variable "instance_type" {
+variable "instance_type_master" {
+  type = string
+}
+
+variable "instance_type_worker" {
   type = string
 }
 
 variable "key_name" {
   type = string
 }
-

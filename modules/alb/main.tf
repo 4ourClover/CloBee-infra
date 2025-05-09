@@ -2,7 +2,7 @@ resource "aws_lb" "public_alb" {
   name               = "clobee-alb"
   internal           = false
   load_balancer_type = "application"
-  subnets            = [var.subnets]
+  subnets            = var.subnets
   security_groups    = [aws_security_group.alb_sg.id]
 }
 
