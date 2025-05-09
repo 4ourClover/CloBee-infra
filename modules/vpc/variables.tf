@@ -1,7 +1,7 @@
 variable "cidr_block" {
-    type = String
+  type = String
 }
 
 variable "vpc_name" {
-    type = String
+  type = String
 }
