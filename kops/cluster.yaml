@@ -1,0 +1,61 @@
+apiVersion: kops.k8s.io/v1alpha2
+kind: Cluster
+metadata:
+    name: clobee.k8s.local
+spec:
+    cloudProvider: aws
+    region: ap-northeast-2
+    networking:
+        calico: {}
+        nonMasqueradeCIDR: 100.64.0.0/10
+    kubernetesVersion: '1.27.3'
+    api:
+        loadBalancer:
+            type: Public
+
+    subnets:
+        - name: clobee-vpc-public-subnet-1
+          zone: ap-northeast-2a
+          type: Public
+          id: subnet-06c86f1f7cb9d73f4
+        - name: clobee-vpc-private-subnet-1
+          zone: ap-northeast-2a
+          type: Private
+          id: subnet-0e950544e54b373c9
+        - name: clobee-vpc-private-subnet-2
+          zone: ap-northeast-2a
+          type: Private
+          id: subnet-0a946b45ce177a6f7
+
+    nodePools:
+        - name: frontend
+          instanceGroup: frontend
+          nodeCount: 1
+          instanceType: t3.micro
+          subnets:
+              - apne2-public-a
+        - name: master
+          instanceGroup: master
+          nodeCount: 1
+          instanceType: t3.medium
+          subnets:
+              - apne2-private-a
+        - name: backend
+          instanceGroup: backend
+          nodeCount: 3
+          instanceType: t3.micro
+          subnets:
+              - apne2-private-b
+
+    etcdClusters:
+        - name: main
+          etcdMembers:
+              - name: a
+                instanceGroup: master
+    additionalNetworkCIDRs:
+        - 10.0.0.0/16
+    networkCIDR: 10.0.0.0/16
+    additionalSecurityGroups:
+        - sg-0da16e47b3baa8c00
+    vpc: vpc-094b5ac6934e75bee
+    provider: aws
