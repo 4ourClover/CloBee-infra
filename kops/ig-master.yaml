@@ -3,13 +3,13 @@ kind: InstanceGroup
 metadata:
     name: master
     labels:
-        kops.k8s.io/cluster: clbee.k8s.local
+        kops.k8s.io/cluster: clobee.k8s.local
 spec:
     role: Master
     minSize: 1
     maxSize: 1
     instanceType: t3.medium
     subnets:
-        - apne2-private-a
+        - clobee-vpc-private-subnet-1
     additionalSecurityGroups:
-        - ${terraform.output.app_sg_id}
+        - ${TF_VAR_APP_SG_ID}
