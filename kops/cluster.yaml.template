@@ -1,7 +1,7 @@
 apiVersion: kops.k8s.io/v1alpha2
 kind: Cluster
 metadata:
-    name: clbee.k8s.local
+    name: clobee.k8s.local
 spec:
     cloudProvider: aws
     region: ap-northeast-2
@@ -14,18 +14,18 @@ spec:
             type: Public
 
     subnets:
-        - name: apne2-public
+        - name: clobee-vpc-public-subnet-1
           zone: ap-northeast-2a
           type: Public
-          id: ${terraform.output.public_subnet1_id}
-        - name: apne2-private-a
+          id: ${TF_VAR_PUBLIC_SUBNET1_ID}
+        - name: clobee-vpc-private-subnet-1
           zone: ap-northeast-2a
           type: Private
-          id: ${terraform.output.private_subnet1_id}
-        - name: apne2-private-b
+          id: ${TF_VAR_PRIVATE_SUBNET1_ID}
+        - name: clobee-vpc-private-subnet-2
           zone: ap-northeast-2a
           type: Private
-          id: ${terraform.output.private_subnet2_id}
+          id: ${TF_VAR_PRIVATE_SUBNET2_ID}
 
     nodePools:
         - name: frontend
@@ -55,5 +55,7 @@ spec:
     additionalNetworkCIDRs:
         - 10.0.0.0/16
     networkCIDR: 10.0.0.0/16
-    vpc: ${terraform.output.vpc_id}
+    additionalSecurityGroups:
+        - ${TF_VAR_APP_SG_ID}
+    vpc: ${TF_VAR_VPC_ID}
     provider: aws
