@@ -47,3 +47,19 @@ resource "aws_route_table_association" "public_subnet1_assoc" {
   subnet_id      = aws_subnet.public-subnet1.id
   route_table_id = var.public_route_table_id
 }
+
+# 지금은 사용 안하는 가용영역
+resource "aws_subnet" "public-subnet2" {
+  vpc_id                  = var.vpc_id
+  cidr_block              = "10.0.20.0/24"
+  availability_zone       = var.azs[1]
+  map_public_ip_on_launch = true
+  tags = {
+    Name = "${var.vpc_name}-public-subnet-2"
+  }
+}
+
+resource "aws_route_table_association" "public_subnet2_assoc" {
+  subnet_id      = aws_subnet.public-subnet2.id
+  route_table_id = var.public_route_table_id
+}
