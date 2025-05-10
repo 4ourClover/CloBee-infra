@@ -1,0 +1,15 @@
+apiVersion: kops.k8s.io/v1alpha2
+kind: InstanceGroup
+metadata:
+    name: frontend
+    labels:
+        kops.k8s.io/cluster: clbee.k8s.local
+spec:
+    role: Node
+    minSize: 1
+    maxSize: 1
+    instanceType: t3.micro
+    subnets:
+        - apne2-public-a
+    additionalSecurityGroups:
+        - ${terraform.output.app_fe_sg_id}
