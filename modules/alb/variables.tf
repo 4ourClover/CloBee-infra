@@ -7,6 +7,6 @@ variable "alb_name" {
 }
 
 variable "subnets" {
-  type = string
+  type = list(string)
 }
 
