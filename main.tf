@@ -29,44 +29,37 @@ module "app-sg" {
   alb_sg_id = module.alb.alb_sg_id
 }
 
-# module "ec2_master" {
-#   source         = "./modules/ec2"
-#   name_prefix    = "ec2_master"
-#   instance_count = 1
-#   ami            = var.ami
-#   vpc_id         = module.vpc.vpc_id
-#   instance_type  = var.instance_type_master
-#   key_name       = var.key_name
-#   subnet_id      = [module.subnets.private_subnet1_id]
-#   alb_sg_id      = module.alb.alb_sg_id
-#   app_sg         = module.app-sg.sg_id
-# }
+# NAT Gateway
+resource "aws_eip" "nat_eip" {
+  domain = "vpc"
+}
 
-# module "ec2_worker" {
-#   source         = "./modules/ec2"
-#   name_prefix    = "ec2_worker"
-#   instance_count = 2
-#   vpc_id         = module.vpc.vpc_id
-#   ami            = var.ami
-#   instance_type  = var.instance_type_worker
-#   key_name       = var.key_name
-#   subnet_id = [
-#     module.subnets.private_subnet2_id,
-#     module.subnets.private_subnet3_id
-#   ]
-#   alb_sg_id = module.alb.alb_sg_id
-#   app_sg    = module.app-sg.sg_id
-# }
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat_eip.id
+  subnet_id     = module.subnets.public_subnet1_id # 퍼블릭 서브넷에 배치
+}
 
-# module "ec2_fe" {
-#   source         = "./modules/ec2"
-#   name_prefix    = "ec2_fe"
-#   instance_count = 1
-#   vpc_id         = module.vpc.vpc_id
-#   ami            = var.ami
-#   instance_type  = var.instance_type_worker
-#   key_name       = var.key_name
-#   subnet_id = [module.subnets.public_subnet1_id]
-#   alb_sg_id = module.alb.alb_sg_id
-#   app_sg    = module.app-sg.app_fe_sg
-# }
+# 프라이빗 라우팅 테이블
+resource "aws_route_table" "private" {
+  vpc_id = module.vpc.vpc_id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat.id
+  }
+
+  tags = {
+    Name = "${var.vpc_name}-private-rt"
+  }
+}
+
+# 프라이빗 서브넷 연결
+resource "aws_route_table_association" "private1" {
+  subnet_id      = module.subnets.private_subnet1_id
+  route_table_id = aws_route_table.private.id
+}
+
+resource "aws_route_table_association" "private2" {
+  subnet_id      = module.subnets.private_subnet2_id
+  route_table_id = aws_route_table.private.id
+}
