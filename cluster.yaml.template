@@ -7,9 +7,10 @@ spec:
     region: ap-northeast-2
     networking:
         calico: {}
-    kubernetesVersion: '1.27.3'
+    kubernetesVersion: '1.32.0'
     api:
         loadBalancer:
+            class: Network
             type: Public
     masterPublicName: clobee-alb-785037933.ap-northeast-2.elb.amazonaws.com
     subnets:
@@ -33,6 +34,7 @@ spec:
     additionalNetworkCIDRs:
         - 10.0.0.0/16
     networkCIDR: 10.0.0.0/16
+    nonMasqueradeCIDR: 100.64.0.0/10
     additionalSecurityGroups:
         - ${TF_VAR_APP_SG_ID}
     networkID: ${TF_VAR_VPC_ID}
