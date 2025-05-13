@@ -3,6 +3,7 @@ kind: InstanceGroup
 metadata:
     name: frontend
     labels:
+        role: frontend
         kops.k8s.io/cluster: clobee.k8s.local
 spec:
     role: Node
