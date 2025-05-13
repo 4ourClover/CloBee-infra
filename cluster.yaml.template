@@ -26,6 +26,18 @@ spec:
           zone: ap-northeast-2a
           type: Private
           id: ${TF_VAR_PRIVATE_SUBNET2_ID}
+        - name: clobee-vpc-public-subnet-2
+          zone: ap-northeast-2c
+          type: Public
+          id: ${TF_VAR_PUBLIC_SUBNET2_ID}
+        - name: clobee-vpc-private-subnet-3
+          zone: ap-northeast-2c
+          type: Private
+          id: ${TF_VAR_PRIVATE_SUBNET3_ID}
+        - name: clobee-vpc-private-subnet-4
+          zone: ap-northeast-2c
+          type: Private
+          id: ${TF_VAR_PRIVATE_SUBNET4_ID}
     etcdClusters:
         - name: main
           etcdMembers:
