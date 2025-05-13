@@ -30,36 +30,78 @@ module "app-sg" {
 }
 
 # NAT Gateway
-resource "aws_eip" "nat_eip" {
+resource "aws_eip" "nat_eip_a" {
   domain = "vpc"
 }
 
-resource "aws_nat_gateway" "nat" {
-  allocation_id = aws_eip.nat_eip.id
-  subnet_id     = module.subnets.public_subnet1_id # 퍼블릭 서브넷에 배치
+resource "aws_nat_gateway" "nat_gw_a" {
+  allocation_id = aws_eip.nat_eip_a.id
+  subnet_id     = module.subnets.public_subnet1_id
+
+  tags = {
+    Name = "nat-gw-a"
+  }
 }
 
-# 프라이빗 라우팅 테이블
-resource "aws_route_table" "private" {
+resource "aws_eip" "nat_eip_c" {
+  domain = "vpc"
+}
+
+resource "aws_nat_gateway" "nat_gw_c" {
+  allocation_id = aws_eip.nat_eip_c.id
+  subnet_id     = module.subnets.public_subnet2_id
+
+  tags = {
+    Name = "nat-gw-b"
+  }
+}
+
+# 프라이빗 라우팅 테이블 - AZ a
+resource "aws_route_table" "private_rt_a" {
   vpc_id = module.vpc.vpc_id
 
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat.id
+    nat_gateway_id = aws_nat_gateway.nat_gw_a.id
   }
 
   tags = {
-    Name = "${var.vpc_name}-private-rt"
+    Name = "${var.vpc_name}-private-rt-a"
   }
 }
 
-# 프라이빗 서브넷 연결
-resource "aws_route_table_association" "private1" {
+resource "aws_route_table_association" "private_rt_assoc_a1" {
   subnet_id      = module.subnets.private_subnet1_id
-  route_table_id = aws_route_table.private.id
+  route_table_id = aws_route_table.private_rt_a.id
 }
 
-resource "aws_route_table_association" "private2" {
+resource "aws_route_table_association" "private_rt_assoc_a2" {
   subnet_id      = module.subnets.private_subnet2_id
-  route_table_id = aws_route_table.private.id
+  route_table_id = aws_route_table.private_rt_a.id
 }
+
+# AZ c
+resource "aws_route_table" "private_rt_c" {
+  vpc_id = module.vpc.vpc_id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat_gw_c.id
+  }
+
+  tags = {
+    Name = "${var.vpc_name}-private-rt-c"
+  }
+}
+
+resource "aws_route_table_association" "private_rt_assoc_b1" {
+  subnet_id      = module.subnets.private_subnet3_id
+  route_table_id = aws_route_table.private_rt_c.id
+}
+
+resource "aws_route_table_association" "private_rt_assoc_b2" {
+  subnet_id      = module.subnets.private_subnet4_id
+  route_table_id = aws_route_table.private_rt_c.id
+}
+
+
