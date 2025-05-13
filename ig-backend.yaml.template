@@ -3,10 +3,11 @@ kind: InstanceGroup
 metadata:
     name: backend
     labels:
+        role: backend
         kops.k8s.io/cluster: clobee.k8s.local
 spec:
     role: Node
-    minSize: 3
+    minSize: 1
     maxSize: 3
     instanceType: t3.micro
     subnets:
