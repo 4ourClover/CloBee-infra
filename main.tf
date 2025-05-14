@@ -29,6 +29,12 @@ module "app-sg" {
   alb_sg_id = module.alb.alb_sg_id
 }
 
+module "iam_bastion_role" {
+  source                = "./modules/iam-bastion-role"
+  role_name             = "kops-bastion-role"
+  instance_profile_name = "kops-bastion-profile"
+}
+
 # NAT Gateway
 resource "aws_eip" "nat_eip_a" {
   domain = "vpc"
