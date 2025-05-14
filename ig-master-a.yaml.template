@@ -1,0 +1,15 @@
+apiVersion: kops.k8s.io/v1alpha2
+kind: InstanceGroup
+metadata:
+    name: master-a
+    labels:
+        kops.k8s.io/cluster: clobee.k8s.local
+spec:
+    role: Master
+    minSize: 1
+    maxSize: 1
+    instanceType: t3.medium
+    subnets:
+        - clobee-vpc-private-subnet-1
+    additionalSecurityGroups:
+        - ${TF_VAR_APP_SG_ID}
