@@ -42,7 +42,11 @@ spec:
         - name: main
           etcdMembers:
               - name: a
-                instanceGroup: master
+                instanceGroup: master-a
+              - name: b
+                instanceGroup: master-a-2
+              - name: c
+                instanceGroup: master-c
     additionalNetworkCIDRs:
         - 10.0.0.0/16
     networkCIDR: 10.0.0.0/16
