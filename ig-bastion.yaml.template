@@ -1,0 +1,22 @@
+apiVersion: kops.k8s.io/v1alpha2
+kind: InstanceGroup
+metadata:
+    name: bastion
+    labels:
+        role: bastion
+        kops.k8s.io/cluster: clobee.k8s.local
+spec:
+    role: Bastion
+    minSize: 2
+    maxSize: 2
+    instanceType: t3.micro
+    image: 099720109477/ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-20250502.1
+    subnets:
+        - clobee-vpc-public-subnet-1
+        - clobee-vpc-public-subnet-2
+    nodeLabels:
+        kops.k8s.io/instancegroup: bastion
+    associatePublicIp: true
+    kubelet: {}
+    iam:
+        profile: ${TF_VAR_BASTION_PROFILE_ARN}

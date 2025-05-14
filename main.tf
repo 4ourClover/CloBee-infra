@@ -29,31 +29,85 @@ module "app-sg" {
   alb_sg_id = module.alb.alb_sg_id
 }
 
-module "ec2_master" {
-  source         = "./modules/ec2"
-  name_prefix    = "ec2_master"
-  instance_count = 1
-  ami            = var.ami
-  vpc_id         = module.vpc.vpc_id
-  instance_type  = var.instance_type_master
-  key_name       = var.key_name
-  subnet_id      = [module.subnets.private_subnet1_id]
-  alb_sg_id      = module.alb.alb_sg_id
-  app_sg         = module.app-sg.sg_id
+module "iam_bastion_role" {
+  source                = "./modules/iam-bastion-role"
+  role_name             = "kops-bastion-role"
+  instance_profile_name = "kops-bastion-profile"
 }
 
-module "ec2_worker" {
-  source         = "./modules/ec2"
-  name_prefix    = "ec2_worker"
-  instance_count = 2
-  vpc_id         = module.vpc.vpc_id
-  ami            = var.ami
-  instance_type  = var.instance_type_worker
-  key_name       = var.key_name
-  subnet_id = [
-    module.subnets.private_subnet2_id,
-    module.subnets.private_subnet3_id
-  ]
-  alb_sg_id = module.alb.alb_sg_id
-  app_sg    = module.app-sg.sg_id
+# NAT Gateway
+resource "aws_eip" "nat_eip_a" {
+  domain = "vpc"
 }
+
+resource "aws_nat_gateway" "nat_gw_a" {
+  allocation_id = aws_eip.nat_eip_a.id
+  subnet_id     = module.subnets.public_subnet1_id
+
+  tags = {
+    Name = "nat-gw-a"
+  }
+}
+
+resource "aws_eip" "nat_eip_c" {
+  domain = "vpc"
+}
+
+resource "aws_nat_gateway" "nat_gw_c" {
+  allocation_id = aws_eip.nat_eip_c.id
+  subnet_id     = module.subnets.public_subnet2_id
+
+  tags = {
+    Name = "nat-gw-b"
+  }
+}
+
+# 프라이빗 라우팅 테이블 - AZ a
+resource "aws_route_table" "private_rt_a" {
+  vpc_id = module.vpc.vpc_id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat_gw_a.id
+  }
+
+  tags = {
+    Name = "${var.vpc_name}-private-rt-a"
+  }
+}
+
+resource "aws_route_table_association" "private_rt_assoc_a1" {
+  subnet_id      = module.subnets.private_subnet1_id
+  route_table_id = aws_route_table.private_rt_a.id
+}
+
+resource "aws_route_table_association" "private_rt_assoc_a2" {
+  subnet_id      = module.subnets.private_subnet2_id
+  route_table_id = aws_route_table.private_rt_a.id
+}
+
+# AZ c
+resource "aws_route_table" "private_rt_c" {
+  vpc_id = module.vpc.vpc_id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat_gw_c.id
+  }
+
+  tags = {
+    Name = "${var.vpc_name}-private-rt-c"
+  }
+}
+
+resource "aws_route_table_association" "private_rt_assoc_b1" {
+  subnet_id      = module.subnets.private_subnet3_id
+  route_table_id = aws_route_table.private_rt_c.id
+}
+
+resource "aws_route_table_association" "private_rt_assoc_b2" {
+  subnet_id      = module.subnets.private_subnet4_id
+  route_table_id = aws_route_table.private_rt_c.id
+}
+
+

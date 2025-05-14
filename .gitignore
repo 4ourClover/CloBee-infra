@@ -5,3 +5,13 @@ terraform.tfvars
 .terraform.lock.hcl
 terraform.tfstate
 terraform.tfstate.backup
+clobee-key.pem
+.terraform.*
+cluster.yaml
+ig-backend.yaml
+ig-frontend.yaml
+ig-master.yaml
+ig-master-a.yaml
+ig-master-a-2.yaml
+ig-master-c.yaml
+ig-bastion.yaml

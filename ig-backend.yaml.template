@@ -1,0 +1,19 @@
+apiVersion: kops.k8s.io/v1alpha2
+kind: InstanceGroup
+metadata:
+    name: backend
+    labels:
+        role: backend
+        kops.k8s.io/cluster: clobee.k8s.local
+spec:
+    role: Node
+    minSize: 2
+    maxSize: 6
+    instanceType: t3.micro
+    subnets:
+        - clobee-vpc-private-subnet-2
+        - clobee-vpc-private-subnet-4
+    nodeLabels:
+        role: backend
+    additionalSecurityGroups:
+        - ${TF_VAR_APP_SG_ID}
