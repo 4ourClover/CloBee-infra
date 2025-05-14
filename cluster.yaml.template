@@ -1,0 +1,58 @@
+apiVersion: kops.k8s.io/v1alpha2
+kind: Cluster
+metadata:
+    name: clobee.k8s.local
+spec:
+    cloudProvider: aws
+    region: ap-northeast-2
+    networking:
+        calico: {}
+    kubernetesVersion: '1.32.0'
+    api:
+        loadBalancer:
+            class: Network
+            type: Public
+    masterPublicName: clobee-alb-785037933.ap-northeast-2.elb.amazonaws.com
+    subnets:
+        - name: clobee-vpc-public-subnet-1
+          zone: ap-northeast-2a
+          type: Public
+          id: ${TF_VAR_PUBLIC_SUBNET1_ID}
+        - name: clobee-vpc-private-subnet-1
+          zone: ap-northeast-2a
+          type: Private
+          id: ${TF_VAR_PRIVATE_SUBNET1_ID}
+        - name: clobee-vpc-private-subnet-2
+          zone: ap-northeast-2a
+          type: Private
+          id: ${TF_VAR_PRIVATE_SUBNET2_ID}
+        - name: clobee-vpc-public-subnet-2
+          zone: ap-northeast-2c
+          type: Public
+          id: ${TF_VAR_PUBLIC_SUBNET2_ID}
+        - name: clobee-vpc-private-subnet-3
+          zone: ap-northeast-2c
+          type: Private
+          id: ${TF_VAR_PRIVATE_SUBNET3_ID}
+        - name: clobee-vpc-private-subnet-4
+          zone: ap-northeast-2c
+          type: Private
+          id: ${TF_VAR_PRIVATE_SUBNET4_ID}
+    etcdClusters:
+        - name: main
+          etcdMembers:
+              - name: a
+                instanceGroup: master-a
+              - name: b
+                instanceGroup: master-a-2
+              - name: c
+                instanceGroup: master-c
+    additionalNetworkCIDRs:
+        - 10.0.0.0/16
+    networkCIDR: 10.0.0.0/16
+    nonMasqueradeCIDR: 100.64.0.0/10
+    additionalSecurityGroups:
+        - ${TF_VAR_APP_SG_ID}
+    networkID: ${TF_VAR_VPC_ID}
+    sshKeyName: clobee-key
+    provider: aws

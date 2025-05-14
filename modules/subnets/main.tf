@@ -1,3 +1,4 @@
+# AZ 0
 # public-subnet
 resource "aws_subnet" "public-subnet1" {
   vpc_id                  = var.vpc_id
@@ -31,16 +32,16 @@ resource "aws_subnet" "private-subnet2" {
   }
 }
 
-# Subnet 3
-resource "aws_subnet" "private-subnet3" {
-  vpc_id                  = var.vpc_id
-  cidr_block              = "10.0.13.0/24"
-  availability_zone       = var.azs[0]
-  map_public_ip_on_launch = false
-  tags = {
-    Name = "${var.vpc_name}-private-subnet-3"
-  }
-}
+# # Subnet 3
+# resource "aws_subnet" "private-subnet3" {
+#   vpc_id                  = var.vpc_id
+#   cidr_block              = "10.0.13.0/24"
+#   availability_zone       = var.azs[0]
+#   map_public_ip_on_launch = false
+#   tags = {
+#     Name = "${var.vpc_name}-private-subnet-3"
+#   }
+# }
 
 # 라우트 테이블 - subnet 연결
 resource "aws_route_table_association" "public_subnet1_assoc" {
@@ -48,7 +49,8 @@ resource "aws_route_table_association" "public_subnet1_assoc" {
   route_table_id = var.public_route_table_id
 }
 
-# 지금은 사용 안하는 가용영역
+
+# AZ 1
 resource "aws_subnet" "public-subnet2" {
   vpc_id                  = var.vpc_id
   cidr_block              = "10.0.20.0/24"
@@ -58,6 +60,40 @@ resource "aws_subnet" "public-subnet2" {
     Name = "${var.vpc_name}-public-subnet-2"
   }
 }
+
+# Subnet 1
+resource "aws_subnet" "private-subnet3" {
+  vpc_id                  = var.vpc_id
+  cidr_block              = "10.0.21.0/24"
+  availability_zone       = var.azs[1]
+  map_public_ip_on_launch = false
+  tags = {
+    Name = "${var.vpc_name}-private-subnet-3"
+  }
+}
+
+# Subnet 2
+resource "aws_subnet" "private-subnet4" {
+  vpc_id                  = var.vpc_id
+  cidr_block              = "10.0.22.0/24"
+  availability_zone       = var.azs[1]
+  map_public_ip_on_launch = false
+  tags = {
+    Name = "${var.vpc_name}-private-subnet-4"
+  }
+}
+
+# # Subnet 3
+# resource "aws_subnet" "private-subnet6" {
+#   vpc_id                  = var.vpc_id
+#   cidr_block              = "10.0.23.0/24"
+#   availability_zone       = var.azs[1]
+#   map_public_ip_on_launch = false
+#   tags = {
+#     Name = "${var.vpc_name}-private-subnet-6"
+#   }
+# }
+
 
 resource "aws_route_table_association" "public_subnet2_assoc" {
   subnet_id      = aws_subnet.public-subnet2.id
