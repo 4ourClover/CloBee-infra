@@ -1,0 +1,5 @@
+- name: Configure bastion with kubectl and kops
+  hosts: bastion
+  become: true
+  roles:
+    - bastion-setup
