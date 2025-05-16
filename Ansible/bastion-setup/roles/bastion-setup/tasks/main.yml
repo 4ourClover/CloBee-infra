@@ -1,0 +1,38 @@
+- name: Install dependencies
+  apt:
+    name: [curl, unzip]
+    state: present
+    update_cache: yes
+
+- name: Install kubectl
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-release/release/v1.29.2/bin/linux/amd64/kubectl
+    dest: /usr/local/bin/kubectl
+    mode: '0755'
+
+- name: Install kops
+  get_url:
+    url: https://github.com/kubernetes/kops/releases/download/v1.28.0/kops-linux-amd64
+    dest: /usr/local/bin/kops
+    mode: '0755'
+
+- name: Set KOPS_STATE_STORE in bashrc
+  lineinfile:
+    path: /home/ubuntu/.bashrc
+    line: 'export KOPS_STATE_STORE=s3://kops-state-clbee-cluster'
+    state: present
+
+- name: Export kubeconfig
+  shell: |
+    export KOPS_STATE_STORE=s3://kops-state-clbee-cluster
+    kops export kubecfg --name=clobee.k8s.local --admin
+  environment:
+    KOPS_STATE_STORE: s3://kops-state-clbee-cluster
+
+- name: Copy get-inventory.sh to bastion
+  copy:
+    src: ../../../../get-inventory.sh
+    dest: /home/ubuntu/get-inventory.sh
+    mode: '0755'
+    owner: ubuntu
+    group: ubuntu
