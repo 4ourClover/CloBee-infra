@@ -24,9 +24,11 @@
     line: 'export KOPS_STATE_STORE=s3://kops-state-clbee-cluster'
     state: present
 
-- name: Export kubeconfig
-  shell: |
-    export KOPS_STATE_STORE=s3://kops-state-clbee-cluster
-    kops export kubecfg --name=clobee.k8s.local --admin
+- name: Export kubeconfig once using kops
+  shell: kops export kubecfg --name=clobee.k8s.local --admin
+  args:
+    executable: /bin/bash
   environment:
     KOPS_STATE_STORE: s3://kops-state-clbee-cluster
+  become: true
+  become_user: ubuntu
