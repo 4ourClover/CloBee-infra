@@ -1,0 +1,17 @@
+apiVersion: kops.k8s.io/v1alpha2
+kind: InstanceGroup
+metadata:
+    name: harbor
+    labels:
+        kops.k8s.io/cluster: clobee.k8s.local
+spec:
+    role: Node
+    minSize: 1
+    maxSize: 1
+    instanceType: t3.medium
+    subnets:
+        - clobee-vpc-public-subnet-1
+    nodeLabels:
+        role: harbor
+    additionalSecurityGroups:
+        - ${TF_VAR_APP_SG_ID}
