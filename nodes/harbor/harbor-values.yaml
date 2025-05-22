@@ -1,0 +1,91 @@
+externalURL: https://clobee-harbor.shop
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+  hosts:
+    core: clobee-harbor.shop
+  tls:
+    enabled: true
+    secretName: harbor-tls
+
+expose:
+  type: ingress
+  tls:
+    enabled: true
+    secretName: harbor-tls
+  ingress:
+    className: nginx
+    hosts:
+      core: clobee-harbor.shop
+
+harborAdminPassword: ${HARBOR_ADMIN_PASSWORD}
+
+core:
+  nodeSelector:
+    role: harbor
+  tolerations:
+    - key: "harbor-only"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+
+jobservice:
+  nodeSelector:
+    role: harbor
+  tolerations:
+    - key: "harbor-only"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+
+portal:
+  nodeSelector:
+    role: harbor
+  tolerations:
+    - key: "harbor-only"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+
+registry:
+  nodeSelector:
+    role: harbor
+  tolerations:
+    - key: "harbor-only"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+
+database:
+  internal:
+    nodeSelector:
+      role: harbor
+    tolerations:
+      - key: "harbor-only"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+
+redis:
+  internal:
+    nodeSelector:
+      role: harbor
+    tolerations:
+      - key: "harbor-only"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+
+trivy:
+  nodeSelector:
+    role: harbor
+  tolerations:
+    - key: "harbor-only"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
