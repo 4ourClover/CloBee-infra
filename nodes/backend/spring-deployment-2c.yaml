@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-app
+  labels:
+    app: spring-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: spring-app
+  template:
+    metadata:
+      labels:
+        app: spring-app
+    spec:
+      nodeSelector:
+        role: backend
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: topology.kubernetes.io/zone
+                    operator: In
+                    values:
+                      - ap-northeast-2c
+      containers:
+        - name: spring-app
+          image: clobee-harbor.shop/library/spring-app:1.1
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: spring-env-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-service
+spec:
+  type: ClusterIP  # 내부 통신용. 외부 노출할 거면 LoadBalancer 또는 Ingress
+  selector:
+    app: spring-app
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
