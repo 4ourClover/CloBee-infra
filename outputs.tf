@@ -22,6 +22,10 @@ output "private_subnet4_id" {
   value = module.subnets.private_subnet4_id
 }
 
+output "private_subnet5_id" {
+  value = module.subnets.private_subnet5_id
+}
+
 output "vpc_id" {
   value = module.vpc.vpc_id
 }
