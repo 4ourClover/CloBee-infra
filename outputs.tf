@@ -57,3 +57,23 @@ output "iam_bastion_instance_profile_arn" {
   value       = module.iam_bastion_role.instance_profile_arn
   description = "Instance profile ARN for bastion"
 }
+
+output "iam_fluentd_role_name" {
+  value       = module.iam_node_role.role_name
+  description = "IAM Role name for fluentd"
+}
+
+output "iam_fluentd_role_arn" {
+  value       = module.iam_node_role.role_arn
+  description = "IAM Role ARN for fluentd"
+}
+
+output "iam_fluentd_instance_profile_name" {
+  value       = module.iam_node_role.instance_profile_name
+  description = "Instance profile name for fluentd"
+}
+
+output "iam_fluentd_instance_profile_arn" {
+  value       = module.iam_node_role.instance_profile_arn
+  description = "Instance profile ARN for fluentd"
+}

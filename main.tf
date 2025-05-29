@@ -35,6 +35,12 @@ module "iam_bastion_role" {
   instance_profile_name = "kops-bastion-profile"
 }
 
+module "iam_fluentd_role" {
+  source                = "./modules/iam-node-role"
+  role_name             = "kops-fluentd-role"
+  instance_profile_name = "kops-fluentd-profile"
+}
+
 # NAT Gateway
 resource "aws_eip" "nat_eip_a" {
   domain = "vpc"
