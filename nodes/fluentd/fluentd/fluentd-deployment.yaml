@@ -1,0 +1,64 @@
+# Fluentd Aggregator Deployment
+# - Fluent Bit에서 수집된 로그를 수신
+# - 로그 라벨에 따라 분기 처리 (spring, backend, harbor, master, frontend, bastion)
+# - spring 로그: INFO/DEBUG 제외하고 Elasticsearch 저장
+# - 모든 로그: 압축하여 S3 저장
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluentd
+  namespace: logging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fluentd
+  template:
+    metadata:
+      labels:
+        app: fluentd
+    spec:
+      # nodeSelector로 fluentd 노드에 배치
+      nodeSelector:
+        role: fluentd
+      serviceAccountName: fluentd
+      containers:
+        - name: fluentd
+          image: clobee-harbor.shop/library/fluent-plugin:1.2
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: fluentd-secret
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: fluentd-secret
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: S3_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: fluentd-secret
+                  key: S3_BUCKET_NAME
+            - name: AWS_REGION
+              value: "ap-northeast-2" 
+          volumeMounts:
+            - name: config-volume
+              mountPath: /fluentd/etc
+            - name: buffer-storage
+              mountPath: /fluentd/buffer
+      volumes:
+        - name: config-volume
+          configMap:
+            name: fluentd-config
+        - name: buffer-storage
+          emptyDir: {}
+---
+# Fluentd ServiceAccount
+# - Fluentd는 수신 및 출력만 수행하므로 최소 권한 필요
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fluentd
+  namespace: logging
