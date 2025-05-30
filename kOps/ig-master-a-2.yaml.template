@@ -13,3 +13,5 @@ spec:
         - clobee-vpc-private-subnet-1
     additionalSecurityGroups:
         - ${TF_VAR_APP_SG_ID}
+    iam:
+        profile: ${TF_VAR_FLUENTD_PROFILE_ARN}
