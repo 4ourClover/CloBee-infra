@@ -17,3 +17,5 @@ spec:
         role: backend
     additionalSecurityGroups:
         - ${TF_VAR_APP_SG_ID}
+    iam:
+        profile: ${TF_VAR_FLUENTD_PROFILE_ARN}

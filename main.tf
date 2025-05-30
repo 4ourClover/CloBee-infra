@@ -35,6 +35,12 @@ module "iam_bastion_role" {
   instance_profile_name = "kops-bastion-profile"
 }
 
+module "iam_fluentd_role" {
+  source                = "./modules/iam-node-role"
+  role_name             = "kops-fluentd-role"
+  instance_profile_name = "kops-fluentd-profile"
+}
+
 # NAT Gateway
 resource "aws_eip" "nat_eip_a" {
   domain = "vpc"
@@ -100,13 +106,18 @@ resource "aws_route_table" "private_rt_c" {
   }
 }
 
-resource "aws_route_table_association" "private_rt_assoc_b1" {
+resource "aws_route_table_association" "private_rt_assoc_c1" {
   subnet_id      = module.subnets.private_subnet3_id
   route_table_id = aws_route_table.private_rt_c.id
 }
 
-resource "aws_route_table_association" "private_rt_assoc_b2" {
+resource "aws_route_table_association" "private_rt_assoc_c2" {
   subnet_id      = module.subnets.private_subnet4_id
+  route_table_id = aws_route_table.private_rt_c.id
+}
+
+resource "aws_route_table_association" "private_rt_assoc_c3" {
+  subnet_id      = module.subnets.private_subnet5_id
   route_table_id = aws_route_table.private_rt_c.id
 }
 
