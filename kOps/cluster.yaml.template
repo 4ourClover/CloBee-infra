@@ -60,3 +60,15 @@ spec:
     networkID: ${TF_VAR_VPC_ID}
     sshKeyName: clobee-key
     provider: aws
+    clusterAutoscaler:
+        enabled: true
+        expander: least-waste
+        balanceSimilarNodeGroups: false
+        awsUseStaticInstanceList: false
+        scaleDownUtilizationThreshold: "0.5"
+        skipNodesWithLocalStorage: true
+        skipNodesWithSystemPods: true
+        newPodScaleUpDelay: "0s"
+        scaleDownDelayAfterAdd: "10m0s"
+        scaleDownUnneededTime: "10m0s"
+        scaleDownUnreadyTime: "20m0s"
