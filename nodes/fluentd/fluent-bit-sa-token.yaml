@@ -1,0 +1,9 @@
+# fluent-bit-sa-token.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: fluent-bit-token # 생성할 시크릿의 이름
+  namespace: logging    # ServiceAccount와 동일한 네임스페이스
+  annotations:
+    kubernetes.io/service-account.name: fluent-bit # 연결할 ServiceAccount의 이름
+type: kubernetes.io/service-account-token # ServiceAccount 토큰 타입 명시

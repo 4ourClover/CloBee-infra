@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluent-bit
+  namespace: logging
+spec:
+  selector:
+    matchLabels:
+      k8s-app: fluent-bit
+  template:
+    metadata:
+      labels:
+        k8s-app: fluent-bit
+    spec:
+      hostNetwork: true
+      serviceAccountName: fluent-bit
+      # ServiceAccount 토큰 시크릿을 명시적으로 마운트
+      volumes:
+        - name: fluent-bit-token
+          secret:
+            secretName: fluent-bit-token # 이 이름은 위에 생성한 토큰 시 크릿의 이름과 동일해야 합니다.
+            # defaultMode: 420 # 권한 설정 (옵션)
+      containers:
+        - name: fluent-bit
+          image: fluent/fluent-bit:3.0.0
+          resources:
+            limits:
+              memory: 200Mi
+              cpu: 500m
+            requests:
+              memory: 100Mi
+              cpu: 100m
+          volumeMounts:
+            - name: varlog
+              mountPath: /var/log
+            - name: config
+              mountPath: /fluent-bit/etc/
+            - name: buffer
+              mountPath: /buffers
+            # ServiceAccount 토큰 시크릿 마운트 (표준 경로)
+            - name: fluent-bit-token
+              mountPath: /var/run/secrets/kubernetes.io/serviceaccount # 이 경로가 중요합니다.
+              readOnly: true
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: config
+          configMap:
+            name: fluent-bit-config
+        - name: buffer
+          emptyDir: {}
+        - name: fluent-bit-token
+          secret:
+            secretName: fluent-bit-token # 위에 생성한 토큰 시크릿 이름 (fluent-bit-sa-token.yaml)
+      # tolerations:
+      #   - key: "node-role.kubernetes.io/control-plane"
+      #     operator: "Exists"
+      #     effect: "NoSchedule"
+      #   - key: "node-role.kubernetes.io/master"
+      #     operator: "Exists"
+      #     effect: "NoSchedule"
+        # - key: "harbor-only"
+        #   operator: "Equal"
+        #   value: "true"
+        #   effect: "NoSchedule"

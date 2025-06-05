@@ -8,7 +8,7 @@ spec:
     role: Node
     minSize: 2
     maxSize: 2
-    instanceType: t3.micro
+    machineType: t3.micro
     subnets:
         - clobee-vpc-public-subnet-1
         - clobee-vpc-public-subnet-2
@@ -16,3 +16,8 @@ spec:
         role: frontend
     additionalSecurityGroups:
         - ${TF_VAR_APP_FE_SG_ID}
+    iam:
+        profile: ${TF_VAR_FLUENTD_PROFILE_ARN}
+    cloudLabels:
+        k8s.io/cluster-autoscaler/enabled: "true"
+        k8s.io/cluster-autoscaler/clobee.k8s.local: "owned"

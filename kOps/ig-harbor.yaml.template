@@ -8,10 +8,13 @@ spec:
     role: Node
     minSize: 1
     maxSize: 1
-    instanceType: t3.medium
+    machineType: t3.medium
     subnets:
         - clobee-vpc-public-subnet-1
     nodeLabels:
         role: harbor
     additionalSecurityGroups:
         - ${TF_VAR_APP_SG_ID}
+    cloudLabels:
+        k8s.io/cluster-autoscaler/enabled: "true"
+        k8s.io/cluster-autoscaler/clobee.k8s.local: "owned"
