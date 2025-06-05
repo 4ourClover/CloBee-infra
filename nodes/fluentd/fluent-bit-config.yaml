@@ -6,57 +6,92 @@ metadata:
 data:
   fluent-bit.conf: |
     [SERVICE]
-        Flush        5
-        Daemon       Off
-        Log_Level    info
-        Parsers_File parsers.conf
-        HTTP_Server  On
-        HTTP_Listen  0.0.0.0
-        HTTP_Port    2020
+        Flush         5
+        Daemon        Off
+        Log_Level     info
+        Parsers_File  parsers.conf
+        HTTP_Server   On
+        HTTP_Listen   0.0.0.0
+        HTTP_Port     2020
 
     [INPUT]
         Name              tail
-        Path              /var/log/containers/*.log
-        Parser            docker
+        Path              /var/log/containers/*.log 
+        # Exclude_Path      /var/log/containers/fluent-bit*.log,/var/log/containers/loki*.log,/var/log/containers/kube-apiserver*.log,/var/log/containers/kube-scheduler*.log,/var/log/containers/kube-controller-manager*.log
         Tag               kube.*
         Refresh_Interval  5
         Rotate_Wait       30
-        Mem_Buf_Limit     50MB
+        Mem_Buf_Limit     5MB
         Skip_Long_Lines   On
-        DB                /var/log/flb_kube.db
+        DB                /buffers/tail.db 
+        Parser            docker
 
     [FILTER]
-        Name              kubernetes
-        Match             kube.*
-        Kube_Tag_Prefix   kube.var.log.containers.
-        Merge_Log         On
-        Keep_Log          Off
-        Annotations       Off
-        Labels            On
-        Kube_URL          https://100.64.0.1:443
+        Name          kubernetes
+        Match         kube.*
+        Kube_Tag_Prefix kube.var.log.containers.
+        Merge_Log     Off
+        Keep_Log      On
+        Annotations   Off
+        Labels        On
+        Kube_URL      https://100.64.0.1:443
 
-    # S3에 모든 로그 저장
-    [OUTPUT]
-        Name              s3
-        Match             kube.*
-        bucket            k8s-fluentd-clobee-bucket
-        region            ap-northeast-2
-        total_file_size   10M
-        upload_timeout    30m
-        store_dir         /buffers
-        s3_key_format     /logs/all/%Y/%m/%d/%H/%M_%S.gz
-        compression       gzip
+    # JSON 로그 파싱 (spring-app 로그가 이미 JSON 형태로 들어오면 유용)
+    [FILTER]
+        Name          parser
+        Match         kube.*
+        Key_Name      log
+        Parser        logjson
+        Reserve_Data  On
+        # Preserve_Key  On
 
-    # ES에 모든 로그 전송 (인덱스는 날짜별 자동 생성)
+
     [OUTPUT]
-        Name              es
-        Match             kube.*
-        Host              ${ES_HOST}
-        Port              ${ES_PORT}   
-        Include_Tag_Key   On
-        Index             k8s-logs
+        Name            es
+        Match           kube.var.log.containers.spring-app*
+        Host            ap.loclx.io
+        Port            47639
+        Include_Tag_Key On
+        Index           k8s-logs
+        Logstash_Format On
+        Logstash_Prefix k8s-logs
         Suppress_Type_Name On
-        Tag_Key           @tag
+        Tag_Key         @tag
+
+    [OUTPUT]
+        Name            es
+        Match           kube.*
+        Host            ap.loclx.io
+        Port            47639
+        Include_Tag_Key On
+        Index           k8s-logs
+        Logstash_Format On
+        Logstash_Prefix k8s-logs
+        Suppress_Type_Name On
+        Tag_Key         @tag
+
+
+    # 모든 로그 → S3
+    # [OUTPUT]
+    #     Name              s3
+    #     Match             kube.*,kube.var.log.containers.*
+    #     bucket            k8s-fluentd-clobee-bucket
+    #     region            ap-northeast-2
+    #     total_file_size   10M
+    #     upload_timeout    30s
+    #     store_dir         /buffers
+    #     s3_key_format     /logs/$TAG/%Y/%m/%d/%H/%M/%S.gz
+    #     compression       gzip
+
+    # [OUTPUT]
+    #     Name            stdout
+    #     Match           kube.var.log.containers.spring-app*
+
+    # [OUTPUT]
+    #     Name            stdout
+    #     Match           kube.var.log.containers.*
+
+
 
   parsers.conf: |
     [PARSER]
@@ -65,3 +100,10 @@ data:
         Time_Key    time
         Time_Format %Y-%m-%dT%H:%M:%S.%L
         Time_Keep   On
+
+    [PARSER]
+        Name        logjson
+        Format      json
+        # Time_Key    @timestamp
+        # Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+        # Time_Keep   On

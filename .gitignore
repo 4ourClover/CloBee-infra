@@ -19,3 +19,4 @@ ig-harbor.yaml
 inventory.ini
 fluent-bit-config-old.yaml
 spring-env-secret.yaml
+ig-fluentd.yaml
