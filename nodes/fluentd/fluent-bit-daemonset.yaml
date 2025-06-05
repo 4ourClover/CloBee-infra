@@ -14,9 +14,15 @@ spec:
     spec:
       hostNetwork: true
       serviceAccountName: fluent-bit
+      # ServiceAccount 토큰 시크릿을 명시적으로 마운트
+      volumes:
+        - name: fluent-bit-token
+          secret:
+            secretName: fluent-bit-token # 이 이름은 위에 생성한 토큰 시 크릿의 이름과 동일해야 합니다.
+            # defaultMode: 420 # 권한 설정 (옵션)
       containers:
         - name: fluent-bit
-          image: fluent/fluent-bit:2.2.0
+          image: fluent/fluent-bit:3.0.0
           resources:
             limits:
               memory: 200Mi
@@ -31,6 +37,10 @@ spec:
               mountPath: /fluent-bit/etc/
             - name: buffer
               mountPath: /buffers
+            # ServiceAccount 토큰 시크릿 마운트 (표준 경로)
+            - name: fluent-bit-token
+              mountPath: /var/run/secrets/kubernetes.io/serviceaccount # 이 경로가 중요합니다.
+              readOnly: true
       terminationGracePeriodSeconds: 10
       volumes:
         - name: varlog
@@ -41,23 +51,17 @@ spec:
             name: fluent-bit-config
         - name: buffer
           emptyDir: {}
-      tolerations:
-        - key: "node-role.kubernetes.io/control-plane"
-          operator: "Exists"
-          effect: "NoSchedule"
-        - key: "node-role.kubernetes.io/master"
-          operator: "Exists"
-          effect: "NoSchedule"
-        - key: "harbor-only"
-          operator: "Equal"
-          value: "true"
-          effect: "NoSchedule"
-
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: fluent-bit
-  namespace: logging
-  annotations:
-    eks.amazonaws.com/role-arn: ${TF_VAR_FLUENTD_PROFILE_ARN}
+        - name: fluent-bit-token
+          secret:
+            secretName: fluent-bit-token # 위에 생성한 토큰 시크릿 이름 (fluent-bit-sa-token.yaml)
+      # tolerations:
+      #   - key: "node-role.kubernetes.io/control-plane"
+      #     operator: "Exists"
+      #     effect: "NoSchedule"
+      #   - key: "node-role.kubernetes.io/master"
+      #     operator: "Exists"
+      #     effect: "NoSchedule"
+        # - key: "harbor-only"
+        #   operator: "Equal"
+        #   value: "true"
+        #   effect: "NoSchedule"
