@@ -8,7 +8,7 @@ spec:
     role: Master
     minSize: 1
     maxSize: 1
-    instanceType: t3.medium
+    machineType: t3.medium
     subnets:
         - clobee-vpc-private-subnet-3
     additionalSecurityGroups:

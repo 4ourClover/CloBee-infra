@@ -69,6 +69,6 @@ spec:
         skipNodesWithLocalStorage: true
         skipNodesWithSystemPods: true
         newPodScaleUpDelay: "0s"
-        scaleDownDelayAfterAdd: "10m0s"
-        scaleDownUnneededTime: "10m0s"
-        scaleDownUnreadyTime: "20m0s"
+        scaleDownDelayAfterAdd: "3m0s"     # 노드 추가 후 scale-down 대기 시간
+        scaleDownUnneededTime: "3m0s"      # 사용되지 않는 노드가 scale-down 되기까지 대기 시간
+        scaleDownUnreadyTime: "10m0s"       # # NotReady 노드가 scale-down 되기까지 대기 시간
