@@ -8,7 +8,7 @@ spec:
     role: Node
     minSize: 2
     maxSize: 2
-    instanceType: t3.micro
+    machineType: t3.micro
     subnets:
         - clobee-vpc-public-subnet-1
         - clobee-vpc-public-subnet-2

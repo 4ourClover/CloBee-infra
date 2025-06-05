@@ -9,7 +9,7 @@ spec:
     role: Bastion
     minSize: 2
     maxSize: 2
-    instanceType: t3.micro
+    machineType: t3.micro
     image: 099720109477/ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-20250502.1
     subnets:
         - clobee-vpc-public-subnet-1

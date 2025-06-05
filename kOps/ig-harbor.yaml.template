@@ -8,7 +8,7 @@ spec:
     role: Node
     minSize: 1
     maxSize: 1
-    instanceType: t3.medium
+    machineType: t3.medium
     subnets:
         - clobee-vpc-public-subnet-1
     nodeLabels:
