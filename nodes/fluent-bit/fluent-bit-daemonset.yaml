@@ -54,13 +54,13 @@ spec:
         - name: fluent-bit-token
           secret:
             secretName: fluent-bit-token # 위에 생성한 토큰 시크릿 이름 (fluent-bit-sa-token.yaml)
-      # tolerations:
-      #   - key: "node-role.kubernetes.io/control-plane"
-      #     operator: "Exists"
-      #     effect: "NoSchedule"
-      #   - key: "node-role.kubernetes.io/master"
-      #     operator: "Exists"
-      #     effect: "NoSchedule"
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
+        # - key: "node-role.kubernetes.io/master"
+        #   operator: "Exists"
+        #   effect: "NoSchedule"
         # - key: "harbor-only"
         #   operator: "Equal"
         #   value: "true"

@@ -72,16 +72,16 @@ data:
 
 
     # 모든 로그 → S3
-    # [OUTPUT]
-    #     Name              s3
-    #     Match             kube.*,kube.var.log.containers.*
-    #     bucket            k8s-fluentd-clobee-bucket
-    #     region            ap-northeast-2
-    #     total_file_size   10M
-    #     upload_timeout    30s
-    #     store_dir         /buffers
-    #     s3_key_format     /logs/$TAG/%Y/%m/%d/%H/%M/%S.gz
-    #     compression       gzip
+    [OUTPUT]
+        Name              s3
+        Match             kube.*,kube.var.log.containers.*
+        bucket            k8s-fluentd-clobee-bucket
+        region            ap-northeast-2
+        total_file_size   10M
+        upload_timeout    30s
+        store_dir         /buffers
+        s3_key_format     /logs/$TAG/%Y/%m/%d/%H/%M/%S.gz
+        compression       gzip
 
     # [OUTPUT]
     #     Name            stdout

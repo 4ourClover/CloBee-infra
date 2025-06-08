@@ -65,7 +65,7 @@ spec:
         expander: least-waste
         balanceSimilarNodeGroups: false
         awsUseStaticInstanceList: false
-        scaleDownUtilizationThreshold: "0.5"
+        scaleDownUtilizationThreshold: "0.3"
         skipNodesWithLocalStorage: true
         skipNodesWithSystemPods: true
         newPodScaleUpDelay: "0s"
