@@ -32,3 +32,11 @@
     KOPS_STATE_STORE: s3://kops-state-clbee-cluster
   become: true
   become_user: ubuntu
+
+- name: Install Metrics Server
+  shell: |
+    kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+  environment:
+    KUBECONFIG: /home/ubuntu/.kube/config
+  become: true
+  become_user: ubuntu

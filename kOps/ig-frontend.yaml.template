@@ -7,7 +7,7 @@ metadata:
 spec:
     role: Node
     minSize: 2
-    maxSize: 2
+    maxSize: 4
     machineType: t3.micro
     subnets:
         - clobee-vpc-public-subnet-1
