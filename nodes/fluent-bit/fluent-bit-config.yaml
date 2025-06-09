@@ -17,7 +17,7 @@ data:
     [INPUT]
         Name              tail
         Path              /var/log/containers/*.log 
-        # Exclude_Path      /var/log/containers/fluent-bit*.log,/var/log/containers/loki*.log,/var/log/containers/kube-apiserver*.log,/var/log/containers/kube-scheduler*.log,/var/log/containers/kube-controller-manager*.log
+        Exclude_Path      /var/log/containers/fluent-bit*.log,/var/log/containers/loki*.log,/var/log/containers/kube-apiserver*.log,/var/log/containers/kube-scheduler*.log,/var/log/containers/kube-controller-manager*.log
         Tag               kube.*
         Refresh_Interval  5
         Rotate_Wait       30
@@ -49,8 +49,8 @@ data:
     [OUTPUT]
         Name            es
         Match           kube.var.log.containers.spring-app*
-        Host            ap.loclx.io
-        Port            47639
+        Host            10.0.10.30
+        Port            9200
         Include_Tag_Key On
         Index           k8s-logs
         Logstash_Format On
@@ -61,8 +61,8 @@ data:
     [OUTPUT]
         Name            es
         Match           kube.*
-        Host            ap.loclx.io
-        Port            47639
+        Host            10.0.10.30
+        Port            9200
         Include_Tag_Key On
         Index           k8s-logs
         Logstash_Format On

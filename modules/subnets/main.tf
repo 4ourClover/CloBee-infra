@@ -83,28 +83,6 @@ resource "aws_subnet" "private-subnet4" {
   }
 }
 
-# Subnet 2
-resource "aws_subnet" "private-subnet5" {
-  vpc_id                  = var.vpc_id
-  cidr_block              = "10.0.23.0/24"
-  availability_zone       = var.azs[1]
-  map_public_ip_on_launch = false
-  tags = {
-    Name = "${var.vpc_name}-private-subnet-5"
-  }
-}
-
-# # Subnet 3
-# resource "aws_subnet" "private-subnet6" {
-#   vpc_id                  = var.vpc_id
-#   cidr_block              = "10.0.23.0/24"
-#   availability_zone       = var.azs[1]
-#   map_public_ip_on_launch = false
-#   tags = {
-#     Name = "${var.vpc_name}-private-subnet-6"
-#   }
-# }
-
 
 resource "aws_route_table_association" "public_subnet2_assoc" {
   subnet_id      = aws_subnet.public-subnet2.id

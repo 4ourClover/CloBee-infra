@@ -22,7 +22,4 @@ output "private_subnet4_id" {
   value = aws_subnet.private-subnet4.id
 }
 
-output "private_subnet5_id" {
-  value = aws_subnet.private-subnet5.id
-}
 
